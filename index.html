@@ -1,11 +1,70 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Página Web</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio Daniel Cortés</title>
+  <!-- Vincula tu hoja de estilos -->
+  <link rel="stylesheet" href="/style/style.css" />
 </head>
 <body>
-    <h1>¡Hola, Mundo!</h1>
+  <!-- Barra de navegación -->
+  <nav>
+    <div class="logo">DC</div>
+    <ul class="nav-links">
+      <li><a href="#">Blog</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="dark-btn" onclick="activarModoOscuro()">Dark</button>
+      <button class="light-btn" onclick="activarModoClaro()">Light</button>
+    </div>
+  </nav>
+  
+  <!-- Sección de cabecera / presentación -->
+  <header class="hero">
+    <h1>Daniel Cortés</h1>
+    <p class="subtitle">Software Engineer in Web Development</p>
+    <p class="description">
+      Abierto a oportunidades remotas. <br>
+      Anuel doble A
+    </p>
+  </header>
+  
+  <!-- Contenido principal -->
+  <main>
+    <!-- Sección de proyectos -->
+    <section class="projects">
+      <h2>Projects</h2>
+      
+      <!-- Tarjeta de proyecto de ejemplo -->
+      <div class="project-card">
+        <img 
+          src="img/imagengato.jpg" alt="Captura de proyecto" class="project-image"/>
+        <div class="project-info">
+          <h3>webportfolios.dev</h3>
+          <p>110+ Users • 9,000 Visits</p>
+          <div class="tags">
+            <span class="tag">Next.js</span>
+            <span class="tag">Tailwind</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">Firebase</span>
+            <span class="tag">AWS</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agrega más .project-card según tus proyectos -->
+    </section>
+  </main>
+
+  <!-- JavaScript para cambiar de modo -->
+  <script>
+    function activarModoOscuro() {
+      document.body.classList.remove('light-mode');
+    }
+    function activarModoClaro() {
+      document.body.classList.add('light-mode');
+    }
+  </script>
 </body>
 </html>
