@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Daniel Cortés | AI Developer</title>
+    <link rel="stylesheet" href="style/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">DC</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="dark-btn" onclick="activarModoOscuro()"><i class="fas fa-moon"></i></button>
+            <button class="light-btn" onclick="activarModoClaro()"><i class="fas fa-sun"></i></button>
+        </div>
+    </nav>
+
+    <header id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Daniel Cortés Casadas</h1>
+                <p class="subtitle">AI Solutions Developer</p>
+                <p class="description">Passionate about creating intelligent solutions using AI. Specialized in developing applications with generative AI integration.</p>
+                <div class="cta-buttons">
+                    <a href="#projects" class="cta-primary">View Projects</a>
+                    <a href="#contact" class="cta-secondary">Contact Me</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="img/profile-img.jpg" alt="Daniel Cortés" class="profile-image">
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="about" class="about-section">
+            <h2>About Me</h2>
+            <div class="about-content">
+                <p>Currently pursuing ASIX (Network Computer Systems Administration) and working as an AI solutions developer. I specialize in integrating generative AI technologies into practical applications.</p>
+                <div class="tech-stack">
+                    <h3>Tech Stack</h3>
+                    <div class="tech-icons">
+                        <i class="fab fa-python" title="Python"></i>
+                        <i class="fab fa-js" title="JavaScript"></i>
+                        <i class="fab fa-react" title="React"></i>
+                        <i class="fab fa-docker" title="Docker"></i>
+                        <i class="fab fa-git-alt" title="Git"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="projects">
+            <h2>Featured Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="img/project1.jpg" alt="Project 1">
+                    </div>
+                    <div class="project-info">
+                        <h3>AI Chat Integration</h3>
+                        <p>A real-time chat application powered by OpenAI's GPT-3.5 model</p>
+                        <div class="tags">
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">OpenAI API</span>
+                            <span class="tag">WebSocket</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Demo</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more project cards here -->
+            </div>
+        </section>
+
+        <section id="skills" class="skills-section">
+            <h2>Skills & Expertise</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>AI & Machine Learning</h3>
+                    <ul>
+                        <li>OpenAI API Integration</li>
+                        <li>Natural Language Processing</li>
+                        <li>Machine Learning Models</li>
+                    </ul>
+                </div>
+                <!-- Add more skill categories -->
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section">
+            <h2>Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <a href="mailto:your.email@example.com" class="contact-link">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="https://github.com/yourusername" class="contact-link">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="https://linkedin.com/in/yourusername" class="contact-link">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- JavaScript para cambiar de modo -->
+    <script>
+        function activarModoOscuro() {
+            document.body.classList.remove('light-mode');
+        }
+        function activarModoClaro() {
+            document.body.classList.add('light-mode');
+        }
+    </script>
+
+    <!-- Chat button -->
+    <button class="chat-trigger">
+        <span>Chat</span>
+    </button>
+
+    <!-- Chat container -->
+    <div class="chat-container" style="display: none;">
+        <div class="chat-header">
+            <h3>Chat with me!</h3>
+            <button class="toggle-chat">×</button>
+        </div>
+        <div class="chat-messages"></div>
+        <div class="chat-input">
+            <textarea placeholder="Type your message..." rows="3"></textarea>
+            <button class="send-message">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatContainer = document.querySelector('.chat-container');
+        const chatMessages = document.querySelector('.chat-messages');
+        const textarea = document.querySelector('.chat-input textarea');
+        const sendButton = document.querySelector('.send-message');
+        const toggleButton = document.querySelector('.toggle-chat');
+        const chatTrigger = document.querySelector('.chat-trigger');
+
+        // Toggle chat visibility
+        toggleButton.addEventListener('click', () => {
+            chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+        });
+
+        chatTrigger.addEventListener('click', () => {
+            chatContainer.style.display = 'flex';
+        });
+
+        // Send message function
+        async function sendMessage(message) {
+            // Add user message to chat
+            addMessage(message, 'user-message');
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-3.5-turbo',
+                        messages: [{
+                            role: 'user',
+                            content: message
+                        }],
+                        max_tokens: 1000
+                    })
+                });
+
+                const data = await response.json();
+                const botResponse = data.choices[0].message.content;
+                addMessage(botResponse, 'bot-message');
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Sorry, I encountered an error. Please try again.', 'bot-message');
+            }
+        }
+
+        // Add message to chat
+        function addMessage(text, className) {
+            const message = document.createElement('div');
+            message.className = `message ${className}`;
+            message.textContent = text;
+            chatMessages.appendChild(message);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Handle send button click
+        sendButton.addEventListener('click', () => {
+            const message = textarea.value.trim();
+            if (message) {
+                sendMessage(message);
+                textarea.value = '';
+            }
+        });
+
+        // Handle enter key
+        textarea.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendButton.click();
+            }
+        });
+    </script>
+    <script src="js/config.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>
