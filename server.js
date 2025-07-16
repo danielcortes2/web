@@ -4,6 +4,8 @@ const helmet = require('helmet');
 const compression = require('compression');
 const path = require('path');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
+const pdfGenerator = require('./utils/pdfGenerator');
+const emailService = require('./utils/emailService');
 require('dotenv').config();
 
 const app = express();
@@ -161,37 +163,228 @@ app.post('/api/chat', chatLimitMiddleware, async (req, res) => {
 // Endpoint para formulario de contacto
 app.post('/api/contact', rateLimitMiddleware, async (req, res) => {
   try {
-    const { nombre, email, servicio, presupuesto, mensaje, telefono } = req.body;
+    const formData = req.body;
+    const { nombre, email, servicio, presupuesto, mensaje, telefono, empresa, timeline, priority } = formData;
 
     // Validación básica
     if (!nombre || !email || !mensaje) {
-      return res.status(400).json({ error: 'Faltan campos requeridos' });
+      return res.status(400).json({ error: 'Faltan campos requeridos: nombre, email y mensaje' });
     }
 
-    // Aquí integrarías con tu servicio de email preferido
-    // Por ejemplo: SendGrid, Nodemailer, etc.
-    
-    console.log('Nuevo mensaje de contacto:', {
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Email inválido' });
+    }
+
+    console.log('📝 Processing contact form submission:', {
       nombre,
       email,
       servicio,
-      presupuesto,
-      mensaje: mensaje.slice(0, 500),
-      telefono,
       timestamp: new Date().toISOString()
     });
 
-    // Simular envío exitoso
-    res.json({ 
-      success: true, 
-      message: 'Mensaje enviado correctamente. Te contactaremos pronto.' 
+    // Normalizar datos para el PDF y email
+    const normalizedData = {
+      name: nombre,
+      email,
+      phone: telefono,
+      company: empresa,
+      service: servicio,
+      budget: presupuesto,
+      timeline,
+      priority,
+      message: mensaje
+    };
+
+    let pdfBuffer = null;
+    let emailSent = false;
+    let errors = [];
+
+    try {
+      // Generar PDF
+      console.log('📄 Generating PDF...');
+      pdfBuffer = await pdfGenerator.generateContactFormPDF(normalizedData);
+      console.log('✅ PDF generated successfully');
+    } catch (pdfError) {
+      console.error('❌ PDF generation failed:', pdfError);
+      errors.push('Error generating PDF');
+    }
+
+    try {
+      // Enviar email con PDF adjunto
+      if (emailService.transporter && pdfBuffer) {
+        console.log('📧 Sending email...');
+        await emailService.sendContactFormEmail(normalizedData, pdfBuffer);
+        emailSent = true;
+        console.log('✅ Email sent successfully');
+      } else {
+        console.log('⚠️ Email service not configured or PDF not available');
+        errors.push('Email service not configured');
+      }
+    } catch (emailError) {
+      console.error('❌ Email sending failed:', emailError);
+      errors.push('Error sending email');
+    }
+
+    // Respuesta exitosa (incluso si falla PDF o email)
+    res.json({
+      success: true,
+      message: 'Formulario enviado correctamente. Te contactaremos pronto.',
+      details: {
+        pdfGenerated: !!pdfBuffer,
+        emailSent: emailSent,
+        timestamp: new Date().toISOString(),
+        errors: errors.length > 0 ? errors : undefined
+      }
     });
 
   } catch (error) {
-    console.error('Contact form error:', error);
-    res.status(500).json({ error: 'Error al enviar el mensaje' });
+    console.error('❌ Contact form error:', error);
+    res.status(500).json({ 
+      error: 'Error al procesar la solicitud',
+      message: 'Inténtalo de nuevo más tarde'
+    });
   }
 });
+
+// Endpoint para generar presupuesto en PDF
+app.post('/api/quote', rateLimitMiddleware, async (req, res) => {
+  try {
+    const formData = req.body;
+    const { nombre, email, servicio, presupuesto, mensaje, telefono } = formData;
+
+    // Validación básica
+    if (!nombre || !email || !servicio) {
+      return res.status(400).json({ error: 'Faltan campos requeridos para el presupuesto' });
+    }
+
+    console.log('💰 Processing quote request:', { nombre, email, servicio });
+
+    // Calcular presupuesto basado en el servicio
+    const quoteData = calculateQuote(servicio, formData);
+    
+    const normalizedData = {
+      name: nombre,
+      email,
+      phone: telefono,
+      service: servicio,
+      budget: presupuesto,
+      message: mensaje
+    };
+
+    let pdfBuffer = null;
+    let emailSent = false;
+
+    try {
+      // Generar PDF del presupuesto
+      console.log('📄 Generating quote PDF...');
+      pdfBuffer = await pdfGenerator.generateQuotePDF(normalizedData, quoteData);
+      console.log('✅ Quote PDF generated successfully');
+
+      // Enviar email con presupuesto
+      if (emailService.transporter) {
+        console.log('📧 Sending quote email...');
+        await emailService.sendQuoteEmail(normalizedData, pdfBuffer, quoteData);
+        emailSent = true;
+        console.log('✅ Quote email sent successfully');
+      }
+    } catch (error) {
+      console.error('❌ Error processing quote:', error);
+    }
+
+    res.json({
+      success: true,
+      message: 'Presupuesto generado correctamente',
+      quote: quoteData,
+      details: {
+        pdfGenerated: !!pdfBuffer,
+        emailSent: emailSent,
+        timestamp: new Date().toISOString()
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Quote generation error:', error);
+    res.status(500).json({ 
+      error: 'Error al generar el presupuesto' 
+    });
+  }
+});
+
+// Función para calcular presupuestos
+function calculateQuote(servicio, formData) {
+  const baseQuotes = {
+    'Desarrollo Web': {
+      base: 800,
+      items: [
+        { name: 'Diseño y maquetación', price: 300 },
+        { name: 'Desarrollo frontend', price: 400 },
+        { name: 'Optimización SEO', price: 100 }
+      ]
+    },
+    'Integración de IA': {
+      base: 1200,
+      items: [
+        { name: 'Análisis de requerimientos', price: 200 },
+        { name: 'Integración de API IA', price: 600 },
+        { name: 'Entrenamiento y configuración', price: 400 }
+      ]
+    },
+    'Apps Web Progresivas': {
+      base: 1500,
+      items: [
+        { name: 'Desarrollo PWA', price: 800 },
+        { name: 'Service Worker', price: 300 },
+        { name: 'Configuración offline', price: 200 },
+        { name: 'Notificaciones push', price: 200 }
+      ]
+    },
+    'E-commerce': {
+      base: 2000,
+      items: [
+        { name: 'Desarrollo tienda online', price: 1000 },
+        { name: 'Pasarela de pagos', price: 400 },
+        { name: 'Panel administrativo', price: 400 },
+        { name: 'Sistema de inventario', price: 200 }
+      ]
+    },
+    'Consultoría Digital': {
+      base: 400,
+      items: [
+        { name: 'Auditoría técnica', price: 200 },
+        { name: 'Informe detallado', price: 100 },
+        { name: 'Sesión de consultoría', price: 100 }
+      ]
+    }
+  };
+
+  const quote = baseQuotes[servicio] || baseQuotes['Desarrollo Web'];
+  
+  // Ajustes basados en presupuesto
+  let multiplier = 1;
+  if (formData.presupuesto === 'Más de €5,000') {
+    multiplier = 1.3;
+  } else if (formData.presupuesto === '€2,000 - €5,000') {
+    multiplier = 1.1;
+  }
+
+  const adjustedItems = quote.items.map(item => ({
+    ...item,
+    price: Math.round(item.price * multiplier)
+  }));
+
+  const total = adjustedItems.reduce((sum, item) => sum + item.price, 0);
+
+  return {
+    service: servicio,
+    items: adjustedItems,
+    total: total,
+    basePrice: quote.base,
+    multiplier: multiplier,
+    validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('es-ES')
+  };
+}
 
 // Ruta principal
 app.get('/', (req, res) => {
