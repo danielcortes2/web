@@ -917,6 +917,11 @@
             </div>
             
             <div class="form-group">
+              <label for="empresa">Empresa</label>
+              <input type="text" id="empresa" name="empresa" placeholder="Nombre de tu empresa (opcional)">
+            </div>
+            
+            <div class="form-group">
               <label for="servicio">Tipo de Proyecto *</label>
               <select id="servicio" name="servicio" required>
                 <option value="">Selecciona un servicio</option>
@@ -937,6 +942,26 @@
                 <option value="1000-3000">€1,000 - €3,000</option>
                 <option value="3000-5000">€3,000 - €5,000</option>
                 <option value="5000+">€5,000+</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="timeline">Timeline del Proyecto</label>
+              <select id="timeline" name="timeline">
+                <option value="">¿Cuándo necesitas el proyecto?</option>
+                <option value="urgente">Urgente (1-2 semanas)</option>
+                <option value="1-mes">1 mes</option>
+                <option value="2-3-meses">2-3 meses</option>
+                <option value="flexible">Flexible</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="priority">Prioridad</label>
+              <select id="priority" name="priority">
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
+                <option value="Baja">Baja</option>
               </select>
             </div>
             
@@ -1017,6 +1042,6 @@
 
   <!-- JavaScript -->
   <!-- Script principal que incluye el chatbot -->
-  <script src="js/main.js"></script>
+  <script src="js/main-fixed.js"></script>
 </body>
 </html>

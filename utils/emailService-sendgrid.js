@@ -1,44 +1,34 @@
+const sgMail = require('@sendgrid/mail');
 const nodemailer = require('nodemailer');
 
-class EmailService {
+class EmailServiceSendGrid {
     constructor() {
+        this.sendgridConfigured = false;
         this.transporter = null;
-        this.initializeTransporter();
+        
+        // Configurar SendGrid
+        if (process.env.SENDGRID_API_KEY) {
+            sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+            this.sendgridConfigured = true;
+            console.log('✅ SendGrid configured');
+        } else {
+            console.log('⚠️ SendGrid API key not found');
+        }
+        
+        // Configurar Gmail como backup
+        if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+            this.transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS
+                }
+            });
+            console.log('✅ Gmail backup configured');
+        }
     }
 
-    initializeTransporter() {
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            console.log('⚠️ Email credentials not configured. Email service disabled.');
-            return;
-        }
-
-        this.transporter = nodemailer.createTransport({
-            service: process.env.EMAIL_SERVICE || 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-        });
-
-        // Verificar conexión
-        this.transporter.verify((error, success) => {
-            if (error) {
-                console.log('❌ Email service connection failed:', error.message);
-                this.transporter = null;
-            } else {
-                console.log('✅ Email service ready');
-            }
-        });
-    }
-
-    async sendContactFormEmail(formData, pdfBuffer) {
-        if (!this.transporter) {
-            throw new Error('Email service not configured');
-        }
-
+    async sendContactFormEmail(formData, pdfBuffer = null) {
         const currentDate = new Date().toLocaleDateString('es-ES', {
             year: 'numeric',
             month: 'long',
@@ -56,58 +46,76 @@ class EmailService {
         const priorityText = formData.priority || 'Media';
         const emoji = priorityEmoji[priorityText] || '🟡';
 
-        const mailOptions = {
-            from: process.env.EMAIL_FROM,
-            to: process.env.EMAIL_TO,
-            subject: `${emoji} Nueva solicitud de contacto - ${formData.name || 'Cliente'} | Stratek`,
-            html: this.getContactEmailHTML(formData, currentDate),
-            attachments: [
-                {
-                    filename: `Solicitud_Contacto_${formData.name?.replace(/\s+/g, '_') || 'Cliente'}_${new Date().toISOString().split('T')[0]}.pdf`,
-                    content: pdfBuffer,
-                    contentType: 'application/pdf'
+        const emailContent = this.getContactEmailHTML(formData, currentDate);
+        const subject = `${emoji} Nueva solicitud de contacto - ${formData.name || 'Cliente'} | Stratek`;
+
+        // Intentar enviar con SendGrid primero
+        if (this.sendgridConfigured) {
+            try {
+                console.log('📧 Attempting to send via SendGrid...');
+                
+                const mailOptions = {
+                    to: process.env.SENDGRID_TO_EMAIL || process.env.EMAIL_TO,
+                    from: {
+                        email: process.env.SENDGRID_FROM_EMAIL || process.env.EMAIL_FROM,
+                        name: 'Stratek Portfolio'
+                    },
+                    subject: subject,
+                    html: emailContent
+                };
+
+                // Agregar PDF si existe
+                if (pdfBuffer) {
+                    mailOptions.attachments = [{
+                        content: pdfBuffer.toString('base64'),
+                        filename: `Solicitud_Contacto_${formData.name?.replace(/\s+/g, '_') || 'Cliente'}_${new Date().toISOString().split('T')[0]}.pdf`,
+                        type: 'application/pdf',
+                        disposition: 'attachment'
+                    }];
                 }
-            ]
-        };
 
-        try {
-            const result = await this.transporter.sendMail(mailOptions);
-            console.log('✅ Email sent successfully:', result.messageId);
-            return result;
-        } catch (error) {
-            console.error('❌ Error sending email:', error);
-            throw error;
-        }
-    }
-
-    async sendQuoteEmail(formData, pdfBuffer, quoteData) {
-        if (!this.transporter) {
-            throw new Error('Email service not configured');
+                const result = await sgMail.send(mailOptions);
+                console.log('✅ Email sent successfully via SendGrid');
+                return { service: 'sendgrid', messageId: result[0].headers['x-message-id'] };
+                
+            } catch (error) {
+                console.error('❌ SendGrid failed:', error.message);
+                console.log('🔄 Trying Gmail backup...');
+            }
         }
 
-        const mailOptions = {
-            from: process.env.EMAIL_FROM,
-            to: process.env.EMAIL_TO,
-            cc: formData.email, // Copia al cliente
-            subject: `💰 Presupuesto para ${formData.name || 'Cliente'} - €${quoteData.total} | Stratek`,
-            html: this.getQuoteEmailHTML(formData, quoteData),
-            attachments: [
-                {
-                    filename: `Presupuesto_${formData.name?.replace(/\s+/g, '_') || 'Cliente'}_${new Date().toISOString().split('T')[0]}.pdf`,
-                    content: pdfBuffer,
-                    contentType: 'application/pdf'
+        // Fallback a Gmail si SendGrid falla
+        if (this.transporter) {
+            try {
+                console.log('📧 Attempting to send via Gmail...');
+                
+                const mailOptions = {
+                    from: process.env.EMAIL_FROM,
+                    to: process.env.EMAIL_TO,
+                    subject: subject,
+                    html: emailContent
+                };
+
+                // Agregar PDF si existe
+                if (pdfBuffer) {
+                    mailOptions.attachments = [{
+                        filename: `Solicitud_Contacto_${formData.name?.replace(/\s+/g, '_') || 'Cliente'}_${new Date().toISOString().split('T')[0]}.pdf`,
+                        content: pdfBuffer,
+                        contentType: 'application/pdf'
+                    }];
                 }
-            ]
-        };
 
-        try {
-            const result = await this.transporter.sendMail(mailOptions);
-            console.log('✅ Quote email sent successfully:', result.messageId);
-            return result;
-        } catch (error) {
-            console.error('❌ Error sending quote email:', error);
-            throw error;
+                const result = await this.transporter.sendMail(mailOptions);
+                console.log('✅ Email sent successfully via Gmail backup');
+                return { service: 'gmail', messageId: result.messageId };
+                
+            } catch (error) {
+                console.error('❌ Gmail backup also failed:', error.message);
+                throw new Error('All email services failed');
+            }
         }
+
+        throw new Error('No email service configured');
     }
 
     getContactEmailHTML(data, currentDate) {
@@ -173,20 +181,6 @@ class EmailService {
                     padding: 15px;
                     margin: 20px 0;
                     border-radius: 0 8px 8px 0;
-                }
-                .action-buttons {
-                    text-align: center;
-                    margin: 30px 0;
-                }
-                .btn {
-                    display: inline-block;
-                    background: #6366f1;
-                    color: white;
-                    padding: 12px 24px;
-                    text-decoration: none;
-                    border-radius: 6px;
-                    margin: 0 10px;
-                    font-weight: bold;
                 }
                 .info-row {
                     display: flex;
@@ -265,15 +259,6 @@ class EmailService {
                 </div>
                 ` : ''}
 
-                <div class="action-buttons">
-                    <a href="mailto:${data.email}?subject=Re: Tu solicitud de proyecto en Stratek" class="btn">
-                        📧 Responder al Cliente
-                    </a>
-                    <a href="tel:${data.phone}" class="btn">
-                        📱 Llamar
-                    </a>
-                </div>
-
                 <div style="text-align: center; margin-top: 30px; color: #666; font-size: 0.9em;">
                     <p>📎 Se adjunta el PDF completo con todos los detalles</p>
                     <p><strong>Stratek</strong> - Transformando ideas en soluciones digitales</p>
@@ -283,75 +268,6 @@ class EmailService {
         </html>
         `;
     }
-
-    getQuoteEmailHTML(data, quoteData) {
-        return `
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <style>
-                body {
-                    font-family: 'Arial', sans-serif;
-                    line-height: 1.6;
-                    color: #333;
-                    max-width: 600px;
-                    margin: 0 auto;
-                    padding: 20px;
-                }
-                .header {
-                    background: linear-gradient(135deg, #10b981, #06b6d4);
-                    color: white;
-                    padding: 30px 20px;
-                    text-align: center;
-                    border-radius: 8px 8px 0 0;
-                }
-                .content {
-                    background: #f8fafc;
-                    padding: 30px 20px;
-                    border-radius: 0 0 8px 8px;
-                }
-                .quote-highlight {
-                    background: linear-gradient(135deg, #6366f1, #06b6d4);
-                    color: white;
-                    padding: 20px;
-                    text-align: center;
-                    border-radius: 8px;
-                    margin: 20px 0;
-                    font-size: 1.5em;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>💰 Presupuesto de Proyecto</h1>
-                <p>Para: ${data.name}</p>
-            </div>
-
-            <div class="content">
-                <div class="quote-highlight">
-                    Presupuesto Total: €${quoteData.total}
-                </div>
-                
-                <p>Hola ${data.name},</p>
-                <p>Se ha generado automáticamente un presupuesto para tu proyecto. Encontrarás todos los detalles en el PDF adjunto.</p>
-                
-                <p><strong>Próximos pasos:</strong></p>
-                <ul>
-                    <li>Revisa el presupuesto detallado en el PDF</li>
-                    <li>Daniel se pondrá en contacto contigo en 24 horas</li>
-                    <li>El presupuesto es válido por 30 días</li>
-                </ul>
-
-                <div style="text-align: center; margin-top: 30px;">
-                    <p><strong>¿Tienes preguntas?</strong></p>
-                    <p>📧 danielcortescasadas6@gmail.com | 📱 +34 611 87 00 10</p>
-                </div>
-            </div>
-        </body>
-        </html>
-        `;
-    }
 }
 
-module.exports = new EmailService();
+module.exports = new EmailServiceSendGrid();

@@ -480,30 +480,45 @@ function filterProjects(projects, filter) {
 
 // === FORMULARIO DE CONTACTO ===
 function initContactForm() {
+    console.log('🔧 Initializing contact form...');
     const form = document.getElementById('contactForm');
-    if (!form) return;
-
+    if (!form) {
+        console.log('❌ Contact form not found!');
+        return;
+    }
+    
+    console.log('✅ Contact form found:', form);
     form.addEventListener('submit', handleFormSubmit);
+    console.log('✅ Submit event listener added');
     
     // Validación en tiempo real
     const inputs = form.querySelectorAll('input, textarea, select');
+    console.log('📝 Found inputs:', inputs.length);
     inputs.forEach(input => {
         input.addEventListener('blur', validateField);
         input.addEventListener('input', clearFieldError);
     });
+    console.log('✅ Contact form initialization complete');
 }
 
 async function handleFormSubmit(e) {
     e.preventDefault();
+    console.log('🚀 handleFormSubmit called');
     
     const form = e.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     
+    console.log('📝 Form data:', data);
+    
     // Validar formulario
     if (!validateForm(data)) {
+        console.log('❌ Form validation failed');
         return;
     }
+    
+    console.log('✅ Form validation passed');
+    console.log('✅ Form validation passed');
     
     // Mostrar loading
     const submitBtn = form.querySelector('button[type="submit"]');
@@ -511,17 +526,62 @@ async function handleFormSubmit(e) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
     submitBtn.disabled = true;
     
+    console.log('📡 Sending request to /api/contact...');
+    
     try {
-        // Simular envío (aquí integrarías con tu servicio de email)
-        await simulateFormSubmission(data);
+        // Enviar al endpoint real de contacto
+        const response = await fetch('/api/contact', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
         
-        // Mostrar éxito
-        showNotification('¡Mensaje enviado correctamente! Te contactaré pronto.', 'success');
-        form.reset();
+        console.log('📡 Response status:', response.status);
+        console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
+        
+        const result = await response.json();
+        console.log('📡 Response data:', result);
+        
+        if (response.ok && result.success) {
+            // Mostrar éxito con detalles
+            let successMessage = '¡Mensaje enviado correctamente! Te contactaré pronto.';
+            
+            if (result.details) {
+                if (result.details.emailSent) {
+                    const emailService = result.details.emailService || 'email';
+                    successMessage += ` ✅ Email enviado via ${emailService}.`;
+                }
+                
+                if (result.details.pdfGenerated) {
+                    successMessage += ' 📄 PDF generado.';
+                }
+                
+                if (result.details.errors && result.details.errors.length > 0) {
+                    successMessage += ' ⚠️ Algunas características avanzadas no están disponibles.';
+                }
+            }
+            
+            showNotification(successMessage, 'success');
+            form.reset();
+        } else {
+            throw new Error(result.error || 'Error al procesar el formulario');
+        }
         
     } catch (error) {
-        console.error('Error al enviar formulario:', error);
-        showNotification('Error al enviar el mensaje. Por favor, intenta de nuevo.', 'error');
+        console.error('❌ Error al enviar formulario:', error);
+        console.error('❌ Error details:', error.message, error.stack);
+        
+        // Mostrar error específico
+        let errorMessage = 'Error al enviar el mensaje. ';
+        if (error.message.includes('network') || error.message.includes('fetch')) {
+            errorMessage += 'Problema de conexión. Verifica que el servidor esté ejecutándose.';
+        } else {
+            errorMessage += error.message || 'Por favor, intenta de nuevo.';
+        }
+        
+        showNotification(errorMessage, 'error');
     } finally {
         // Restaurar botón
         submitBtn.innerHTML = originalText;
@@ -602,20 +662,6 @@ function clearFieldError(e) {
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
-}
-
-async function simulateFormSubmission(data) {
-    // Simular llamada a API
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Simular éxito/error aleatorio para demo
-            if (Math.random() > 0.1) {
-                resolve({ success: true });
-            } else {
-                reject(new Error('Error simulado'));
-            }
-        }, 2000);
-    });
 }
 
 // === NOTIFICACIONES ===

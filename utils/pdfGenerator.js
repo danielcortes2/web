@@ -1,30 +1,21 @@
-const htmlPdf = require('html-pdf-node');
+const pdf = require('html-pdf-node');
 
 class PDFGenerator {
     constructor() {
         this.options = {
             format: 'A4',
-            border: {
-                top: '1cm',
-                right: '1cm',
-                bottom: '1cm',
-                left: '1cm'
+            margin: {
+                top: '20px',
+                right: '20px',
+                bottom: '20px',
+                left: '20px'
             },
-            timeout: 30000
+            printBackground: true,
+            type: 'pdf'
         };
     }
 
-    generateContactFormPDF(formData) {
-        const html = this.getContactFormHTML(formData);
-        return htmlPdf.generatePdf({ content: html }, this.options);
-    }
-
-    generateQuotePDF(formData, calculatedQuote) {
-        const html = this.getQuoteHTML(formData, calculatedQuote);
-        return htmlPdf.generatePdf({ content: html }, this.options);
-    }
-
-    getContactFormHTML(data) {
+    async createContactPDF(formData) {
         const currentDate = new Date().toLocaleDateString('es-ES', {
             year: 'numeric',
             month: 'long',
@@ -33,7 +24,16 @@ class PDFGenerator {
             minute: '2-digit'
         });
 
-        return `
+        const priorityStyles = {
+            'Alta': 'background: #fee2e2; color: #dc2626; border-left: 4px solid #ef4444;',
+            'Media': 'background: #fef3c7; color: #f59e0b; border-left: 4px solid #f59e0b;',
+            'Baja': 'background: #dcfce7; color: #16a34a; border-left: 4px solid #22c55e;'
+        };
+
+        const priorityText = formData.priority || 'Media';
+        const priorityStyle = priorityStyles[priorityText] || priorityStyles['Media'];
+
+        const html = `
         <!DOCTYPE html>
         <html lang="es">
         <head>
@@ -48,181 +48,171 @@ class PDFGenerator {
                     padding: 20px;
                 }
                 .header {
+                    background: linear-gradient(135deg, #6366f1, #06b6d4);
+                    color: white;
+                    padding: 30px 20px;
                     text-align: center;
-                    border-bottom: 3px solid #6366f1;
-                    padding-bottom: 20px;
-                    margin-bottom: 30px;
+                    border-radius: 8px 8px 0 0;
+                    margin-bottom: 0;
                 }
-                .logo {
-                    font-size: 2em;
-                    font-weight: bold;
-                    color: #6366f1;
-                    margin-bottom: 10px;
-                }
-                .subtitle {
-                    color: #666;
-                    font-size: 1.1em;
-                }
-                .form-section {
+                .content {
                     background: #f8fafc;
+                    padding: 30px 20px;
+                    border-radius: 0 0 8px 8px;
+                    margin-top: 0;
+                }
+                .client-info, .project-info {
+                    background: white;
                     padding: 20px;
                     border-radius: 8px;
-                    margin-bottom: 20px;
+                    margin: 20px 0;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 }
-                .form-section h3 {
-                    color: #6366f1;
-                    border-bottom: 2px solid #e2e8f0;
-                    padding-bottom: 10px;
-                    margin-bottom: 15px;
+                .priority-alert {
+                    ${priorityStyle}
+                    padding: 15px;
+                    border-radius: 8px;
+                    margin: 20px 0;
+                    font-weight: bold;
+                    text-align: center;
                 }
-                .form-row {
+                .message-box {
+                    background: #e0f2fe;
+                    border-left: 4px solid #0284c7;
+                    padding: 15px;
+                    margin: 20px 0;
+                    border-radius: 0 8px 8px 0;
+                }
+                .info-row {
                     display: flex;
                     justify-content: space-between;
-                    margin-bottom: 15px;
-                    align-items: center;
+                    margin-bottom: 10px;
+                    padding: 8px 0;
+                    border-bottom: 1px solid #e2e8f0;
                 }
-                .form-label {
+                .info-label {
                     font-weight: bold;
                     color: #4a5568;
-                    width: 30%;
+                    width: 40%;
                 }
-                .form-value {
+                .info-value {
                     color: #2d3748;
-                    width: 65%;
-                    background: white;
-                    padding: 8px 12px;
-                    border-radius: 4px;
-                    border: 1px solid #e2e8f0;
-                }
-                .message-section {
-                    background: white;
-                    padding: 20px;
-                    border-left: 4px solid #6366f1;
-                    border-radius: 0 8px 8px 0;
+                    width: 60%;
+                    text-align: right;
                 }
                 .footer {
                     text-align: center;
-                    margin-top: 40px;
-                    padding-top: 20px;
-                    border-top: 2px solid #e2e8f0;
+                    margin-top: 30px;
                     color: #666;
                     font-size: 0.9em;
+                    border-top: 2px solid #e2e8f0;
+                    padding-top: 20px;
                 }
-                .contact-info {
-                    background: #6366f1;
-                    color: white;
-                    padding: 15px;
-                    border-radius: 8px;
-                    text-align: center;
+                h1, h2, h3 {
+                    margin-top: 0;
                 }
-                .urgent {
-                    background: #fee2e2;
-                    border-left: 4px solid #ef4444;
-                    padding: 15px;
-                    border-radius: 0 8px 8px 0;
-                    margin: 20px 0;
-                }
-                .priority-high {
-                    color: #dc2626;
-                    font-weight: bold;
-                }
-                .priority-medium {
-                    color: #f59e0b;
-                    font-weight: bold;
-                }
-                .priority-low {
-                    color: #10b981;
-                    font-weight: bold;
+                h3 {
+                    color: #4a5568;
+                    border-bottom: 2px solid #e2e8f0;
+                    padding-bottom: 5px;
                 }
             </style>
         </head>
         <body>
             <div class="header">
-                <div class="logo">🚀 STRATEK</div>
-                <div class="subtitle">Solicitud de Contacto - ${currentDate}</div>
+                <h1>🚀 Solicitud de Contacto</h1>
+                <p style="margin: 0; font-size: 1.1em;">Stratek - Desarrollo Web Profesional</p>
+                <p style="margin: 5px 0 0 0; opacity: 0.9;">${currentDate}</p>
             </div>
 
-            <div class="form-section">
-                <h3>📋 Información del Cliente</h3>
-                <div class="form-row">
-                    <span class="form-label">Nombre Completo:</span>
-                    <span class="form-value">${data.name || 'No especificado'}</span>
-                </div>
-                <div class="form-row">
-                    <span class="form-label">Email:</span>
-                    <span class="form-value">${data.email || 'No especificado'}</span>
-                </div>
-                <div class="form-row">
-                    <span class="form-label">Teléfono:</span>
-                    <span class="form-value">${data.phone || 'No especificado'}</span>
-                </div>
-                <div class="form-row">
-                    <span class="form-label">Empresa:</span>
-                    <span class="form-value">${data.company || 'No especificado'}</span>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3>💼 Detalles del Proyecto</h3>
-                <div class="form-row">
-                    <span class="form-label">Tipo de Servicio:</span>
-                    <span class="form-value">${data.service || 'No especificado'}</span>
-                </div>
-                <div class="form-row">
-                    <span class="form-label">Presupuesto:</span>
-                    <span class="form-value">${data.budget || 'No especificado'}</span>
-                </div>
-                <div class="form-row">
-                    <span class="form-label">Timeline:</span>
-                    <span class="form-value">${data.timeline || 'No especificado'}</span>
-                </div>
-                ${data.priority ? `
-                <div class="form-row">
-                    <span class="form-label">Prioridad:</span>
-                    <span class="form-value priority-${data.priority.toLowerCase()}">${data.priority.toUpperCase()}</span>
+            <div class="content">
+                ${formData.priority === 'Alta' ? `
+                <div class="priority-alert">
+                    ⚡ SOLICITUD PRIORITARIA - Se requiere respuesta inmediata
                 </div>
                 ` : ''}
-            </div>
 
-            ${data.message ? `
-            <div class="form-section">
-                <h3>💬 Mensaje del Cliente</h3>
-                <div class="message-section">
-                    ${data.message.replace(/\n/g, '<br>')}
+                <div class="client-info">
+                    <h3>👤 Información del Cliente</h3>
+                    <div class="info-row">
+                        <span class="info-label">Nombre:</span>
+                        <span class="info-value">${formData.name || 'No especificado'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">${formData.email || 'No especificado'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Teléfono:</span>
+                        <span class="info-value">${formData.phone || 'No especificado'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Empresa:</span>
+                        <span class="info-value">${formData.company || 'No especificado'}</span>
+                    </div>
                 </div>
-            </div>
-            ` : ''}
 
-            ${data.priority === 'Alta' ? `
-            <div class="urgent">
-                ⚡ <strong>SOLICITUD PRIORITARIA</strong> - Se requiere respuesta en 2-4 horas
-            </div>
-            ` : ''}
+                <div class="project-info">
+                    <h3>💼 Detalles del Proyecto</h3>
+                    <div class="info-row">
+                        <span class="info-label">Servicio:</span>
+                        <span class="info-value">${formData.service || 'No especificado'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Presupuesto:</span>
+                        <span class="info-value">${formData.budget || 'No especificado'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Timeline:</span>
+                        <span class="info-value">${formData.timeline || 'No especificado'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Prioridad:</span>
+                        <span class="info-value">${priorityText}</span>
+                    </div>
+                </div>
 
-            <div class="contact-info">
-                <h4>🎯 Próximos Pasos</h4>
-                <p>Daniel se pondrá en contacto en las próximas 24 horas para discutir los detalles del proyecto.</p>
-                <p><strong>📧</strong> danielcortescasadas6@gmail.com | <strong>📱</strong> +34 611 87 00 10</p>
-            </div>
+                ${formData.message ? `
+                <div class="message-box">
+                    <h4 style="margin-top: 0; color: #0284c7;">💬 Mensaje del Cliente:</h4>
+                    <p style="margin-bottom: 0;">${formData.message.replace(/\n/g, '<br>')}</p>
+                </div>
+                ` : ''}
 
-            <div class="footer">
-                <p><strong>Stratek - Desarrollo Web Profesional</strong></p>
-                <p>Barcelona, España | www.stratek.dev</p>
-                <p>Documento generado automáticamente el ${currentDate}</p>
+                <div class="footer">
+                    <p><strong>Stratek</strong> - Transformando ideas en soluciones digitales</p>
+                    <p>📧 danielcortescasadas6@gmail.com | 📱 +34 611 87 00 10</p>
+                    <p style="font-size: 0.8em; margin-top: 15px;">
+                        Documento generado automáticamente el ${currentDate}
+                    </p>
+                </div>
             </div>
         </body>
         </html>
         `;
+
+        try {
+            const file = { content: html };
+            const pdfBuffer = await pdf.generatePdf(file, this.options);
+            console.log('✅ PDF generado correctamente');
+            return pdfBuffer;
+        } catch (error) {
+            console.error('❌ Error generando PDF:', error);
+            throw error;
+        }
     }
 
-    getQuoteHTML(data, quote) {
+    async createQuotePDF(formData) {
+        // Implementación del PDF de presupuesto
         const currentDate = new Date().toLocaleDateString('es-ES', {
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
         });
 
-        return `
+        const html = `
         <!DOCTYPE html>
         <html lang="es">
         <head>
@@ -237,85 +227,87 @@ class PDFGenerator {
                     padding: 20px;
                 }
                 .header {
+                    background: linear-gradient(135deg, #10b981, #06b6d4);
+                    color: white;
+                    padding: 30px 20px;
                     text-align: center;
-                    border-bottom: 3px solid #6366f1;
-                    padding-bottom: 20px;
-                    margin-bottom: 30px;
+                    border-radius: 8px 8px 0 0;
                 }
-                .logo {
-                    font-size: 2em;
-                    font-weight: bold;
-                    color: #6366f1;
-                    margin-bottom: 10px;
+                .content {
+                    background: #f8fafc;
+                    padding: 30px 20px;
+                    border-radius: 0 0 8px 8px;
                 }
-                .quote-total {
+                .quote-highlight {
                     background: linear-gradient(135deg, #6366f1, #06b6d4);
                     color: white;
                     padding: 20px;
-                    border-radius: 8px;
                     text-align: center;
-                    font-size: 1.5em;
-                    margin: 20px 0;
-                }
-                .breakdown {
-                    background: #f8fafc;
-                    padding: 20px;
                     border-radius: 8px;
                     margin: 20px 0;
-                }
-                .breakdown-item {
-                    display: flex;
-                    justify-content: space-between;
-                    padding: 10px 0;
-                    border-bottom: 1px solid #e2e8f0;
-                }
-                .terms {
-                    background: #fee2e2;
-                    border-left: 4px solid #ef4444;
-                    padding: 15px;
-                    margin: 20px 0;
+                    font-size: 1.5em;
+                    font-weight: bold;
                 }
             </style>
         </head>
         <body>
             <div class="header">
-                <div class="logo">🚀 STRATEK</div>
-                <div class="subtitle">Presupuesto de Proyecto - ${currentDate}</div>
+                <h1>💰 Presupuesto de Proyecto</h1>
+                <p>Para: ${formData.name}</p>
+                <p>${currentDate}</p>
             </div>
 
-            <div class="quote-total">
-                💰 PRESUPUESTO ESTIMADO: €${quote.total}
-            </div>
-
-            <div class="breakdown">
-                <h3>📊 Desglose del Presupuesto</h3>
-                ${quote.items.map(item => `
-                    <div class="breakdown-item">
-                        <span>${item.name}</span>
-                        <span>€${item.price}</span>
-                    </div>
-                `).join('')}
-            </div>
-
-            <div class="terms">
-                <h4>📋 Términos y Condiciones</h4>
-                <ul>
-                    <li>Este presupuesto es válido por 30 días</li>
-                    <li>Incluye 2 revisiones sin costo adicional</li>
-                    <li>Pago: 50% al inicio, 50% al finalizar</li>
-                    <li>Tiempo de entrega: ${data.timeline || '2-4 semanas'}</li>
-                </ul>
-            </div>
-
-            <div class="footer">
-                <p><strong>Stratek - Desarrollo Web Profesional</strong></p>
-                <p>Barcelona, España | www.stratek.dev</p>
-                <p>Daniel Cortés | danielcortescasadas6@gmail.com | +34 611 87 00 10</p>
+            <div class="content">
+                <div class="quote-highlight">
+                    Presupuesto Estimado: ${formData.budget || 'A consultar'}
+                </div>
+                
+                <h3>📋 Detalles del Proyecto</h3>
+                <p><strong>Cliente:</strong> ${formData.name}</p>
+                <p><strong>Email:</strong> ${formData.email}</p>
+                <p><strong>Servicio:</strong> ${formData.service}</p>
+                <p><strong>Presupuesto:</strong> ${formData.budget}</p>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <p><strong>Stratek</strong> - Desarrollo Web Profesional</p>
+                    <p>📧 danielcortescasadas6@gmail.com | 📱 +34 611 87 00 10</p>
+                </div>
             </div>
         </body>
         </html>
         `;
+
+        try {
+            const file = { content: html };
+            const pdfBuffer = await pdf.generatePdf(file, this.options);
+            console.log('✅ Quote PDF generado correctamente');
+            return pdfBuffer;
+        } catch (error) {
+            console.error('❌ Error generando Quote PDF:', error);
+            throw error;
+        }
     }
 }
 
-module.exports = new PDFGenerator();
+// Exportar funciones individuales para compatibilidad
+const pdfGenerator = new PDFGenerator();
+
+async function createContactPDF(formData) {
+    return await pdfGenerator.createContactPDF(formData);
+}
+
+async function createQuotePDF(formData) {
+    return await pdfGenerator.createQuotePDF(formData);
+}
+
+// Función legacy para compatibilidad
+async function generateContactFormPDF(formData) {
+    return await createContactPDF(formData);
+}
+
+module.exports = {
+    PDFGenerator,
+    createContactPDF,
+    createQuotePDF,
+    generateContactFormPDF
+};
