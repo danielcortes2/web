@@ -418,10 +418,10 @@
         <li><a href="#contacto">Contacto</a></li>
       </ul>
       <div class="nav-right">
-        <button class="cta-btn" onclick="scrollToContact()">
+        <a href="#contacto" class="cta-btn">
           <i class="fas fa-rocket"></i>
           Empezar Proyecto
-        </button>
+        </a>
       </div>
       <div class="mobile-menu-toggle">
         <i class="fas fa-bars"></i>
@@ -456,14 +456,14 @@
           </div>
         </div>
         <div class="hero-buttons">
-          <button class="btn-primary" onclick="scrollToContact()">
+          <a href="#contacto" class="btn-primary">
             <i class="fas fa-rocket"></i>
             Iniciar Proyecto
-          </button>
-          <button class="btn-secondary" onclick="scrollToPortfolio()">
+          </a>
+          <a href="#portfolio" class="btn-secondary">
             <i class="fas fa-eye"></i>
             Ver Portfolio
-          </button>
+          </a>
         </div>
       </div>
       <div class="hero-image">
@@ -723,62 +723,57 @@
                   <div class="skill-tags">
                     <span class="skill-tag">React</span>
                     <span class="skill-tag">Vue.js</span>
+                    <span class="skill-tag">JavaScript</span>
                     <span class="skill-tag">TypeScript</span>
-                    <span class="skill-tag">Next.js</span>
+                    <span class="skill-tag">HTML5</span>
+                    <span class="skill-tag">CSS3</span>
                   </div>
                 </div>
+                
                 <div class="skill-category">
                   <h4><i class="fas fa-server"></i> Backend</h4>
                   <div class="skill-tags">
                     <span class="skill-tag">Node.js</span>
                     <span class="skill-tag">Python</span>
-                    <span class="skill-tag">FastAPI</span>
+                    <span class="skill-tag">PHP</span>
+                    <span class="skill-tag">MongoDB</span>
+                    <span class="skill-tag">MySQL</span>
                     <span class="skill-tag">PostgreSQL</span>
                   </div>
                 </div>
+                
                 <div class="skill-category">
-                  <h4><i class="fas fa-robot"></i> IA & ML</h4>
+                  <h4><i class="fas fa-robot"></i> IA & Machine Learning</h4>
                   <div class="skill-tags">
-                    <span class="skill-tag">OpenAI</span>
+                    <span class="skill-tag">OpenAI API</span>
+                    <span class="skill-tag">Claude</span>
                     <span class="skill-tag">TensorFlow</span>
                     <span class="skill-tag">Langchain</span>
-                    <span class="skill-tag">Hugging Face</span>
+                    <span class="skill-tag">RAG Systems</span>
                   </div>
                 </div>
+                
                 <div class="skill-category">
-                  <h4><i class="fas fa-cloud"></i> DevOps</h4>
+                  <h4><i class="fas fa-tools"></i> DevOps & Tools</h4>
                   <div class="skill-tags">
-                    <span class="skill-tag">AWS</span>
                     <span class="skill-tag">Docker</span>
+                    <span class="skill-tag">Git</span>
+                    <span class="skill-tag">AWS</span>
+                    <span class="skill-tag">Vercel</span>
                     <span class="skill-tag">CI/CD</span>
-                    <span class="skill-tag">Nginx</span>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div class="certifications">
-              <h3>Certificaciones</h3>
-              <div class="cert-list">
-                <div class="cert-item">
-                  <i class="fas fa-certificate"></i>
-                  <span>AWS Certified Developer</span>
-                </div>
-                <div class="cert-item">
-                  <i class="fas fa-certificate"></i>
-                  <span>Google Cloud Professional</span>
-                </div>
-                <div class="cert-item">
-                  <i class="fas fa-certificate"></i>
-                  <span>Técnico Superior ASIX</span>
-                </div>
-              </div>
+            
+            <div class="experience-stats">
+              <!-- Estadísticas eliminadas por solicitud -->
             </div>
           </div>
           
-          <div class="about-image">
+          <div class="about-profile">
             <div class="profile-card">
-              <img src="img/imagengato.jpg" alt="Daniel Cortés - Fundador de Stratek" class="profile-image">
+              <img src="img/daniel-cortes.jfif" alt="Daniel Cortés - Fundador de Stratek" class="profile-image">
               <div class="profile-info">
                 <h3>Daniel Cortés</h3>
                 <p>Full Stack Developer & AI Specialist</p>
@@ -900,7 +895,7 @@
             </div>
           </div>
           
-          <form class="contact-form" id="contactForm">
+          <form class="contact-form" id="contact-form">
             <div class="form-group">
               <label for="nombre">Nombre Completo *</label>
               <input type="text" id="nombre" name="nombre" required>
@@ -914,24 +909,6 @@
             <div class="form-group">
               <label for="telefono">Teléfono</label>
               <input type="tel" id="telefono" name="telefono">
-            </div>
-            
-            <div class="form-group">
-              <label for="empresa">Empresa</label>
-              <input type="text" id="empresa" name="empresa" placeholder="Nombre de tu empresa (opcional)">
-            </div>
-            
-            <div class="form-group">
-              <label for="servicio">Tipo de Proyecto *</label>
-              <select id="servicio" name="servicio" required>
-                <option value="">Selecciona un servicio</option>
-                <option value="desarrollo-web">Desarrollo Web</option>
-                <option value="integracion-ia">Integración de IA</option>
-                <option value="ecommerce">E-commerce</option>
-                <option value="app-web">App Web Progresiva</option>
-                <option value="consultoria">Consultoría Digital</option>
-                <option value="mantenimiento">Soporte & Mantenimiento</option>
-              </select>
             </div>
             
             <div class="form-group">
@@ -957,22 +934,13 @@
             </div>
             
             <div class="form-group">
-              <label for="priority">Prioridad</label>
-              <select id="priority" name="priority">
-                <option value="Media">Media</option>
-                <option value="Alta">Alta</option>
-                <option value="Baja">Baja</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
               <label for="mensaje">Describe tu Proyecto *</label>
               <textarea id="mensaje" name="mensaje" rows="5" required placeholder="Cuéntame sobre tu proyecto, objetivos y cualquier requisito específico..."></textarea>
             </div>
             
             <button type="submit" class="btn-primary">
-              <i class="fas fa-rocket"></i>
-              Enviar Propuesta
+              <i class="fas fa-paper-plane"></i>
+              Enviar Mensaje
             </button>
           </form>
         </div>
