@@ -2,67 +2,32 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Portfolio Daniel Cortés</title>
-  <!-- Vincula tu hoja de estilos -->
-  <link rel="stylesheet" href="/style/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Stratek - Desarrollo Web Profesional</title>
+  <meta name="description" content="Desarrollo web profesional, aplicaciones web, inteligencia artificial y soluciones digitales personalizadas">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <!-- Preconectar a dominios externos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Google Fonts con display=swap para evitar FOIT -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Meta tags para PWA y móvil -->
+  <meta name="theme-color" content="#667eea">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
-  <!-- Barra de navegación -->
-  <nav>
-    <div class="logo">DC</div>
-    <ul class="nav-links">
-      <li><a href="#">Portfolio</a></li>
-    </ul>
-    <div class="nav-right">
-      <button class="dark-btn" onclick="activarModoOscuro()">Dark</button>
-      <button class="light-btn" onclick="activarModoClaro()">Light</button>
-    </div>
-  </nav>
-  
-  <!-- Sección de cabecera / presentación -->
-  <header class="hero">
-    <h1>Daniel Cortés Casadas</h1>
-    <p class="subtitle">Junior Developing AI Solutions</p>
-    <p class="description">Estudiante de informática en el ciclo ASIX (Administración de Sistemas Informáticos en Red) y recientemente he comenzado a trabajar como desarrollador de 
-    aplicaciones, enfocándome en la integración de inteligencia artificial generativa.<br></p>
-  </header>
-  
-  <!-- Contenido principal -->
-  <main>
-    <!-- Sección de proyectos -->
-    <section class="projects">
-      <h2>Projects</h2>
-      
-      <!-- Tarjeta de proyecto de ejemplo -->
-      <div class="project-card">
-        <img 
-          src="img/imagengato.jpg" alt="Captura de proyecto" class="project-image"/>
-        <div class="project-info">
-          <h3>Aquí van mis proyectos. De momento es un texto de ejemplo.</h3>
-          <p>Esto es una breve descripción del proyecto</p>
-          <div class="tags">
-            <span class="tag">Etiqueta 1</span>
-            <span class="tag">Etiqueta 2</span>
-            <span class="tag">Etiqueta 3</span>
-            <span class="tag">Etiqueta 4</span>
-            <span class="tag">Etiqueta 5</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Agrega más .project-card según tus proyectos -->
-    </section>
-  </main>
-
-  <!-- JavaScript para cambiar de modo -->
-  <script>
-    function activarModoOscuro() {
-      document.body.classList.remove('light-mode');
-    }
-    function activarModoClaro() {
-      document.body.classList.add('light-mode');
-    }
-  </script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

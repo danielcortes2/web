@@ -1,0 +1,166 @@
+{
+  "siteName": "Stratek - Desarrollo Web Profesional",
+  "siteDescription": "Desarrollador web full-stack especializado en inteligencia artificial y soluciones digitales modernas. Servicios de desarrollo web, e-commerce, PWAs y consultoría digital.",
+  "siteUrl": "https://stratek.dev",
+  "author": "Daniel Cortés",
+  "keywords": [
+    "desarrollo web",
+    "desarrollador web Barcelona",
+    "inteligencia artificial",
+    "full stack developer",
+    "React developer",
+    "Node.js",
+    "e-commerce",
+    "PWA",
+    "consultoría digital",
+    "desarrollo apps web",
+    "chatbots IA",
+    "automatización",
+    "freelancer Barcelona"
+  ],
+  "services": [
+    {
+      "name": "Desarrollo Web",
+      "description": "Sitios web modernos, responsivos y optimizados para SEO",
+      "price": "Desde €800",
+      "features": ["Diseño responsivo", "Optimización SEO", "Velocidad optimizada"]
+    },
+    {
+      "name": "Integración de IA",
+      "description": "Implementación de soluciones de inteligencia artificial",
+      "price": "Desde €1,200",
+      "features": ["Chatbots inteligentes", "Análisis de datos", "Automatización"]
+    },
+    {
+      "name": "Apps Web Progresivas",
+      "description": "Aplicaciones web que funcionan como apps nativas",
+      "price": "Desde €1,500",
+      "features": ["Funciona offline", "Notificaciones push", "Instalable"]
+    },
+    {
+      "name": "E-commerce",
+      "description": "Tiendas online completas con gestión de inventario",
+      "price": "Desde €2,000",
+      "features": ["Pagos seguros", "Gestión inventario", "Panel admin"]
+    },
+    {
+      "name": "Consultoría Digital",
+      "description": "Auditorías técnicas y estrategias de crecimiento",
+      "price": "Desde €400",
+      "features": ["Auditoría técnica", "Optimización", "Estrategia digital"]
+    },
+    {
+      "name": "Soporte & Mantenimiento",
+      "description": "Mantenimiento continuo y soporte técnico 24/7",
+      "price": "Desde €150/mes",
+      "features": ["Soporte 24/7", "Actualizaciones", "Backups automáticos"]
+    }
+  ],
+  "contact": {
+    "email": "danielcortescasadas6@gmail.com",
+    "phone": "+34 611 87 00 10",
+    "location": "Barcelona, España",
+    "availability": "Lun-Vie 9:00-18:00",
+    "responseTime": "< 2 horas"
+  },
+  "social": {
+    "linkedin": "https://linkedin.com/in/danielcortes",
+    "github": "https://github.com/danielcortes",
+    "twitter": "https://twitter.com/danielcortes",
+    "instagram": "https://instagram.com/danielcortes"
+  },
+  "technologies": {
+    "frontend": ["React", "Vue.js", "TypeScript", "Next.js", "Tailwind CSS"],
+    "backend": ["Node.js", "Python", "FastAPI", "Express.js"],
+    "databases": ["PostgreSQL", "MongoDB", "Redis"],
+    "ai": ["OpenAI", "TensorFlow", "Langchain", "Hugging Face"],
+    "cloud": ["AWS", "Google Cloud", "Vercel", "Netlify"],
+    "tools": ["Docker", "Git", "Figma", "VS Code"]
+  },
+  "achievements": {
+    "projectsCompleted": "50+",
+    "clientSatisfaction": "98%",
+    "supportAvailability": "24/7",
+    "experienceYears": "5+",
+    "technologiesMastered": "20+",
+    "clientsServed": "100+"
+  },
+  "testimonials": [
+    {
+      "name": "María González",
+      "position": "CEO, TechStartup",
+      "rating": 5,
+      "text": "Daniel transformó completamente nuestra presencia online. El nuevo sitio web aumentó nuestras ventas en un 150% en solo 3 meses.",
+      "project": "E-commerce Platform",
+      "metric": "150% increase in sales"
+    },
+    {
+      "name": "Carlos Ruiz",
+      "position": "Director, LogisticsPro",
+      "rating": 5,
+      "text": "La integración de IA que desarrolló nos ahorra 20 horas semanales de trabajo manual. ROI increíble y soporte excepcional.",
+      "project": "AI Automation System",
+      "metric": "20 hours/week saved"
+    },
+    {
+      "name": "Ana Martín",
+      "position": "Fundadora, DesignStudio",
+      "rating": 5,
+      "text": "Profesional, puntual y con una calidad técnica excepcional. Definitivamente volveremos a trabajar con él en futuros proyectos.",
+      "project": "Portfolio Website",
+      "metric": "300% more leads"
+    }
+  ],
+  "portfolio": [
+    {
+      "title": "Plataforma E-learning con IA",
+      "description": "Plataforma educativa que utiliza IA para personalizar el aprendizaje y generar contenido adaptativo según el progreso del estudiante.",
+      "technologies": ["React", "Node.js", "OpenAI", "MongoDB", "Socket.io"],
+      "category": ["web", "ai"],
+      "metrics": {
+        "users": "500+",
+        "engagement": "40% more"
+      },
+      "liveUrl": "https://elearning-demo.com",
+      "githubUrl": "https://github.com/danielcortes/elearning-ai"
+    },
+    {
+      "title": "Tienda Online Premium",
+      "description": "E-commerce completo con sistema de pagos, gestión de inventario en tiempo real y dashboard administrativo avanzado.",
+      "technologies": ["Next.js", "Stripe", "PostgreSQL", "Redis", "Docker"],
+      "category": ["ecommerce", "web"],
+      "metrics": {
+        "sales": "€50k+",
+        "uptime": "98%"
+      },
+      "liveUrl": "https://shop-premium.com",
+      "githubUrl": "https://github.com/danielcortes/shop-premium"
+    },
+    {
+      "title": "Sistema de Análisis Predictivo",
+      "description": "Dashboard analítico que utiliza machine learning para predecir tendencias de ventas y optimizar inventarios.",
+      "technologies": ["Python", "TensorFlow", "D3.js", "FastAPI", "AWS"],
+      "category": ["ai", "web"],
+      "metrics": {
+        "accuracy": "85%",
+        "cost_savings": "30%"
+      },
+      "liveUrl": "https://analytics-dashboard.com",
+      "githubUrl": "https://github.com/danielcortes/predictive-analytics"
+    }
+  ],
+  "businessGoals": {
+    "2025": {
+      "projects": "100+",
+      "clients": "50+",
+      "revenue": "€150k+",
+      "satisfaction": "98%+"
+    }
+  },
+  "kpis": {
+    "conversionRate": "8%+",
+    "responseTime": "< 2 hours",
+    "onTimeDelivery": "95%+",
+    "recurringClients": "70%+"
+  }
+}
