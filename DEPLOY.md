@@ -40,6 +40,16 @@ Abre `http://localhost:4173` y verifica que todo funcione correctamente.
 
 ### 4. Subir a Hostinger
 
+#### Ubicación del .htaccess
+
+**IMPORTANTE:** El archivo `.htaccess` debe estar en DOS lugares:
+- ✅ En la raíz del proyecto: `.htaccess` (se comiteará a Git)
+- ✅ En `public/.htaccess` (Vite lo copia a `dist/` durante el build)
+
+Ambos son necesarios:
+- El de `public/` se incluye en el build y va a producción
+- El de la raíz es para referencia y versionamiento
+
 #### Opción A: Usando File Manager (Panel de Control)
 
 1. Accede al panel de control de Hostinger

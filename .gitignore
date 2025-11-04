@@ -13,6 +13,9 @@ yarn-error.log*
 coverage/
 /.pnpm-debug.log*
 
+# IMPORTANTE: NO ignorar .htaccess (necesario para Hostinger)
+!.htaccess
+!public/.htaccess
 # Environment variables
 .env
 .env.local
