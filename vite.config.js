@@ -11,6 +11,10 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
-  }
+    sourcemap: true,
+    // Copiar .htaccess al directorio de salida
+    copyPublicDir: true
+  },
+  // Configurar base path (usar '/' para el root del dominio)
+  base: '/'
 })
