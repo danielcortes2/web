@@ -122,7 +122,26 @@ Visita tu dominio y verifica:
 # Contenido: debe incluir RewriteRule . /index.html [L]
 ```
 
-### 2. Error 404 en rutas
+### 2. Error "Failed to load module script: Expected a JavaScript module but the server responded with MIME type 'text/plain'"
+
+**Causa:** El servidor no está configurando los tipos MIME correctos para archivos JavaScript.
+
+**Solución:**
+El `.htaccess` ya incluye la configuración necesaria:
+```apache
+<IfModule mod_mime.c>
+  AddType application/javascript js mjs
+  AddType text/javascript js mjs
+</IfModule>
+```
+
+**Verificar:**
+- Asegúrate de que el `.htaccess` se subió correctamente
+- Verifica que Apache tiene `mod_mime` habilitado
+- Limpia la caché del navegador (Ctrl+Shift+R)
+- Si el problema persiste, contacta a soporte de Hostinger para verificar que `mod_mime` está activo
+
+### 3. Error 404 en rutas
 
 **Causa:** `.htaccess` no está funcionando.
 
@@ -130,7 +149,7 @@ Visita tu dominio y verifica:
 - Verifica que `mod_rewrite` esté habilitado en tu hosting
 - Contacta a soporte de Hostinger para habilitar `mod_rewrite`
 
-### 3. Assets (imágenes/CSS) no cargan
+### 4. Assets (imágenes/CSS) no cargan
 
 **Causa:** Rutas incorrectas o archivos faltantes.
 
@@ -139,7 +158,7 @@ Visita tu dominio y verifica:
 - Verifica que las rutas en el código usen `/` (ruta absoluta desde root)
 - Verifica que `base: '/'` esté configurado en `vite.config.js`
 
-### 4. Error CORS en formulario
+### 5. Error CORS en formulario
 
 **Causa:** El backend no permite solicitudes desde tu dominio.
 
@@ -163,7 +182,7 @@ app.add_middleware(
 )
 ```
 
-### 5. Variables de entorno no funcionan
+### 6. Variables de entorno no funcionan
 
 **Causa:** Variables no definidas o no compiladas en el build.
 
