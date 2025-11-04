@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer');
 class EmailServiceSendGrid {
     constructor() {
         this.sendgridConfigured = false;
+        this.mailgunConfigured = false;
         this.transporter = null;
         
         // Configurar SendGrid
@@ -13,6 +14,27 @@ class EmailServiceSendGrid {
             console.log('✅ SendGrid configured');
         } else {
             console.log('⚠️ SendGrid API key not found');
+        }
+        
+        // Configurar Mailgun
+        if (process.env.MAIL_USERNAME && process.env.MAIL_PASSWORD) {
+            this.mailgunTransporter = nodemailer.createTransport({
+                host: process.env.MAIL_SERVER || 'smtp.mailgun.org',
+                port: parseInt(process.env.MAIL_PORT) || 587,
+                secure: process.env.MAIL_SSL_TLS === 'True',
+                auth: {
+                    user: process.env.MAIL_USERNAME,
+                    pass: process.env.MAIL_PASSWORD
+                },
+                tls: {
+                    ciphers: 'SSLv3',
+                    rejectUnauthorized: false
+                }
+            });
+            this.mailgunConfigured = true;
+            console.log('✅ Mailgun configured');
+        } else {
+            console.log('⚠️ Mailgun credentials not found');
         }
         
         // Configurar Gmail como backup
@@ -80,11 +102,42 @@ class EmailServiceSendGrid {
                 
             } catch (error) {
                 console.error('❌ SendGrid failed:', error.message);
+                console.log('🔄 Trying Mailgun...');
+            }
+        }
+
+        // Intentar enviar con Mailgun
+        if (this.mailgunConfigured) {
+            try {
+                console.log('📧 Attempting to send via Mailgun...');
+                
+                const mailOptions = {
+                    from: process.env.MAIL_FROM,
+                    to: process.env.ADMIN_EMAIL || process.env.EMAIL_TO,
+                    subject: subject,
+                    html: emailContent
+                };
+
+                // Agregar PDF si existe
+                if (pdfBuffer) {
+                    mailOptions.attachments = [{
+                        filename: `Solicitud_Contacto_${formData.name?.replace(/\s+/g, '_') || 'Cliente'}_${new Date().toISOString().split('T')[0]}.pdf`,
+                        content: pdfBuffer,
+                        contentType: 'application/pdf'
+                    }];
+                }
+
+                const result = await this.mailgunTransporter.sendMail(mailOptions);
+                console.log('✅ Email sent successfully via Mailgun');
+                return { service: 'mailgun', messageId: result.messageId };
+                
+            } catch (error) {
+                console.error('❌ Mailgun failed:', error.message);
                 console.log('🔄 Trying Gmail backup...');
             }
         }
 
-        // Fallback a Gmail si SendGrid falla
+        // Fallback a Gmail si otros servicios fallan
         if (this.transporter) {
             try {
                 console.log('📧 Attempting to send via Gmail...');

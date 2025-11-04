@@ -261,26 +261,10 @@ table {
   text-decoration: none;
   font-weight: 500;
   transition: color var(--transition-fast);
-  position: relative;
 }
 
 .nav-links a:hover {
   color: var(--primary-color);
-}
-
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--primary-color);
-  transition: width var(--transition-normal);
-}
-
-.nav-links a:hover::after {
-  width: 100%;
 }
 
 .nav-right {
@@ -1103,25 +1087,48 @@ table {
   min-height: 120px;
 }
 
+.submit-message {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+}
+
+.submit-message.success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+}
+
+.submit-message.error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
 /* FOOTER */
+/* ============================================
+   FOOTER - Diseño compacto
+   ============================================ */
 .footer {
   background: var(--bg-primary);
-  padding: var(--spacing-2xl) 0 var(--spacing-lg);
+  padding: var(--spacing-xl) 0 var(--spacing-md);
   border-top: 1px solid var(--bg-tertiary);
 }
 
 .footer-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-xl);
+  grid-template-columns: 1.5fr 1fr 1.2fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
 }
 
-.footer-section h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: var(--spacing-md);
-  color: var(--text-primary);
+/* Brand Section */
+.footer-brand p {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--spacing-sm);
+  font-size: 0.9rem;
 }
 
 .footer-logo {
@@ -1131,60 +1138,144 @@ table {
   font-weight: 700;
   font-size: 1.5rem;
   color: var(--primary-color);
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
 }
 
-.footer-section p {
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: var(--spacing-md);
+.footer-logo:hover {
+  opacity: 0.8;
 }
 
-.footer-section ul {
+/* Enlaces Section */
+.footer-links-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.footer-links-grid ul {
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.footer-section ul li {
-  margin-bottom: 0.5rem;
-}
-
-.footer-section ul li a {
+.footer-links-grid ul li a {
   color: var(--text-secondary);
   text-decoration: none;
   transition: color var(--transition-fast);
+  font-size: 0.9rem;
+  display: inline-block;
 }
 
-.footer-section ul li a:hover {
+.footer-links-grid ul li a:hover {
+  color: var(--primary-color);
+  transform: translateX(3px);
+}
+
+/* Contacto Section */
+.footer-contact h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.contact-info-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contact-info-compact a,
+.contact-info-compact p {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color var(--transition-fast);
+}
+
+.contact-info-compact a:hover {
   color: var(--primary-color);
 }
 
-.footer-bottom {
-  border-top: 1px solid var(--bg-tertiary);
-  padding-top: var(--spacing-lg);
+.contact-info-compact i {
+  color: var(--primary-color);
+  width: 16px;
+  font-size: 0.9rem;
 }
 
-.footer-bottom-content {
+.contact-info-compact span {
+  line-height: 1.4;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  border-top: 1px solid var(--bg-tertiary);
+  padding-top: var(--spacing-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
 }
 
-.footer-links {
+.footer-bottom p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.footer-legal {
   display: flex;
-  gap: var(--spacing-lg);
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
-.footer-links a {
+.footer-legal a {
   color: var(--text-muted);
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   transition: color var(--transition-fast);
 }
 
-.footer-links a:hover {
+.footer-legal a:hover {
   color: var(--primary-color);
+}
+
+.footer-legal .separator {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+/* Redes sociales compactas */
+.social-links {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.social-links a:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-3px);
 }
 
 /* NOTIFICACIONES */
@@ -1985,30 +2076,47 @@ a:focus-visible {
   }
   
   .footer {
-    padding: var(--spacing-xl) 0 var(--spacing-md);
+    padding: var(--spacing-lg) 0 var(--spacing-sm);
   }
   
   .footer-content {
     grid-template-columns: 1fr;
-    gap: var(--spacing-md);
+    gap: var(--spacing-lg);
     text-align: center;
   }
-  
-  .footer-section h3 {
-    font-size: 1.125rem;
-    margin-bottom: var(--spacing-sm);
+
+  .footer-brand,
+  .footer-links-section,
+  .footer-contact {
+    padding: 0;
   }
   
-  .footer-section ul {
-    display: flex;
-    flex-direction: column;
+  .footer-brand p {
+    font-size: 0.875rem;
+  }
+  
+  .footer-links-grid ul {
     align-items: center;
-    gap: 0.5rem;
+  }
+  
+  .contact-info-compact {
+    align-items: center;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    padding-top: var(--spacing-sm);
+  }
+  
+  .footer-legal {
+    justify-content: center;
   }
   
   .footer-logo {
+    justify-content: center;
     font-size: 1.25rem;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
   }
   
   .social-links {
@@ -2269,29 +2377,36 @@ a:focus-visible {
     font-size: 0.95rem;
   }
   
-  .footer-section h3 {
-    font-size: 1rem;
+  .footer-brand p,
+  .footer-links-grid ul li a,
+  .contact-info-compact a,
+  .contact-info-compact p {
+    font-size: 0.8rem;
   }
   
-  .footer-section p {
-    font-size: 0.875rem;
+  .footer-contact h3,
+  .footer-links-section h3 {
+    font-size: 1rem;
   }
   
   .footer-logo {
     font-size: 1.125rem;
   }
   
-  .social-links {
-    gap: 0.375rem;
+  .social-links a {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
   }
   
-  .footer-links {
-    flex-direction: column;
-    gap: var(--spacing-xs);
+  .footer-legal {
+    flex-direction: row;
+    gap: 0.5rem;
   }
   
-  .footer-links a {
-    font-size: 0.8rem;
+  .footer-legal a,
+  .footer-bottom p {
+    font-size: 0.75rem;
   }
 }
 
@@ -2377,5 +2492,137 @@ a:focus-visible {
   .floating-elements {
     width: 180px;
     height: 180px;
+  }
+}
+
+/* ============================================
+   OPTIMIZACIONES PARA MÓVIL - PERFORMANCE
+   ============================================ */
+
+/* Reducir animaciones en móviles para mejor rendimiento */
+@media (max-width: 768px) {
+  /* Desactivar animaciones complejas en móvil */
+  .floating-card {
+    animation: none !important;
+  }
+  
+  /* Simplificar transiciones */
+  * {
+    transition-duration: 0.15s !important;
+  }
+  
+  /* Reducir intensidad de sombras para mejorar rendimiento */
+  .service-card,
+  .project-card,
+  .testimonial-card,
+  .contact-card {
+    box-shadow: var(--shadow-sm) !important;
+  }
+  
+  .service-card:hover,
+  .project-card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: var(--shadow-md) !important;
+  }
+  
+  /* Ocultar elementos decorativos pesados en móvil */
+  .floating-elements {
+    opacity: 0.3;
+  }
+  
+  /* Optimizar tipografía para móvil */
+  body {
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Mejorar áreas táctiles para móvil (mínimo 44x44px) */
+@media (max-width: 768px) {
+  .btn-primary,
+  .btn-secondary,
+  .cta-btn {
+    min-height: 48px;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .nav-links a {
+    padding: 0.75rem 0;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .mobile-menu-toggle {
+    min-width: 48px;
+    min-height: 48px;
+  }
+  
+  .filter-btn {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+  
+  .social-links a {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Aumentar espaciado entre elementos interactivos */
+  .hero-buttons {
+    gap: var(--spacing-md);
+  }
+  
+  .contact-info {
+    gap: var(--spacing-md);
+  }
+}
+
+/* Preferencias de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Optimización para conexiones lentas */
+@media (prefers-reduced-data: reduce) {
+  /* Cargar versiones ligeras de imágenes */
+  .hero-image,
+  .project-image,
+  .profile-image {
+    background-color: var(--bg-secondary);
+  }
+}
+
+/* Mejoras de rendimiento para scroll en móvil */
+@media (max-width: 768px) {
+  /* Activar aceleración por hardware solo donde sea necesario */
+  .navbar,
+  .mobile-menu-toggle,
+  .nav-links {
+    will-change: transform;
+  }
+  
+  /* Simplificar backdrop-filter en móvil (muy pesado) */
+  .navbar.scrolled {
+    backdrop-filter: none;
+    background: rgba(10, 13, 23, 0.98);
+  }
+  
+  /* Mejorar scroll performance */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Reducir complejidad visual en scroll */
+  .section {
+    padding: var(--spacing-xl) 0;
   }
 }

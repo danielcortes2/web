@@ -289,23 +289,20 @@ function initMobileMenu() {
     const menuToggle = document.querySelector('.mobile-menu-toggle');
     const navLinks = document.querySelector('.nav-links');
     const body = document.body;
-    
+
     if (menuToggle && navLinks) {
         menuToggle.addEventListener('click', () => {
             AppState.isMenuOpen = !AppState.isMenuOpen;
             navLinks.classList.toggle('active', AppState.isMenuOpen);
             menuToggle.classList.toggle('active', AppState.isMenuOpen);
-            
-            // Mejor gestión del scroll del body
+
             if (AppState.isMenuOpen) {
-                // Guardar posición actual del scroll
                 const scrollY = window.scrollY;
                 body.style.position = 'fixed';
                 body.style.top = `-${scrollY}px`;
                 body.style.width = '100%';
                 body.classList.add('menu-open');
             } else {
-                // Restaurar posición del scroll
                 const scrollY = body.style.top;
                 body.style.position = '';
                 body.style.top = '';
@@ -315,77 +312,24 @@ function initMobileMenu() {
             }
         });
 
-        // Cerrar menú al hacer clic en un enlace
         const links = navLinks.querySelectorAll('a');
         links.forEach(link => {
             link.addEventListener('click', () => {
-                const scrollY = body.style.top;
-                
-                AppState.isMenuOpen = false;
-                navLinks.classList.remove('active');
-                menuToggle.classList.remove('active');
-                
-                // Restaurar scroll
-                body.style.position = '';
-                body.style.top = '';
-                body.style.width = '';
-                body.classList.remove('menu-open');
-                
-                // Restaurar posición antes del scroll suave
-                window.scrollTo(0, parseInt(scrollY || '0') * -1);
-            });
-        });
-        
-        // Cerrar menú cuando se redimensiona la ventana (responsive)
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && AppState.isMenuOpen) {
-                const scrollY = body.style.top;
-                
-                AppState.isMenuOpen = false;
-                navLinks.classList.remove('active');
-                menuToggle.classList.remove('active');
-                
-                // Restaurar scroll
-                body.style.position = '';
-                body.style.top = '';
-                body.style.width = '';
-                body.classList.remove('menu-open');
-                window.scrollTo(0, parseInt(scrollY || '0') * -1);
-            }
-        });
-        
-        // Cerrar menú al hacer swipe hacia la izquierda (gesto táctil)
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        navLinks.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-        
-        navLinks.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-        
-        function handleSwipe() {
-            if (touchEndX < touchStartX - 50) { // Swipe left
                 if (AppState.isMenuOpen) {
-                    const scrollY = body.style.top;
-                    
                     AppState.isMenuOpen = false;
                     navLinks.classList.remove('active');
                     menuToggle.classList.remove('active');
-                    
                     body.style.position = '';
                     body.style.top = '';
                     body.style.width = '';
                     body.classList.remove('menu-open');
-                    window.scrollTo(0, parseInt(scrollY || '0') * -1);
                 }
-            }
-        }
+            });
+        });
     }
 }
+
+// Initialize the mobile menu
 
 // === UTILIDADES ===
 function debounce(func, wait) {
